@@ -1,0 +1,49 @@
+# Jekyll config for GitHub Pages.
+#
+# `baseurl` is the one line that depends on the repo name. The repo is
+# `sayanansivaraman-dev/sayanansivaraman-dev.github.io`, which makes it a USER site served at the
+# domain root -- so baseurl is empty.
+#
+title: Sayanan Sivaraman
+description: Computer vision and machine learning — perception, on-device models, and the evaluation that tells you whether they work.
+baseurl: ""
+url: https://sayanansivaraman-dev.github.io
+
+# No theme. A remote_theme would pull in layouts and CSS that then have to be fought; the whole
+# site is three small templates and one stylesheet, which is less code than the overrides would be.
+# Emit `projects/rellis3d/index.html` rather than `projects/rellis3d.html`. Every link is built with
+# `relative_url` to a trailing-slash path, and `jekyll serve` happens to fall back to `.html` for
+# those -- but that is a dev-server courtesy, not a guarantee of the static host. `pretty` makes the
+# built tree match the links literally, so local and production cannot disagree.
+permalink: pretty
+
+# Generates /sitemap.xml and /robots.txt at build time. On GitHub's allow-list, and already
+# bundled in the github-pages metagem, so no Gemfile change is needed. `url:` above is what makes
+# the emitted links absolute -- without it the sitemap is useless to a crawler.
+plugins:
+  - jekyll-sitemap
+
+markdown: kramdown
+kramdown:
+  input: GFM              # GitHub-flavoured: fenced blocks and pipe tables
+  syntax_highlighter: rouge
+  hard_wrap: false
+
+# Content pages carry no front-matter boilerplate: everything under projects/ gets the project
+# layout automatically.
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+  - scope:
+      path: "projects"
+    values:
+      layout: project
+
+exclude:
+  - README.md
+  - _tools
+  - Gemfile
+  - Gemfile.lock
+  - vendor

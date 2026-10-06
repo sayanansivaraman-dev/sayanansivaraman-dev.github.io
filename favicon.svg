@@ -1,0 +1,18 @@
+<!-- Favicon: initials in the site accent colour.
+
+     A filled background with knocked-out letters rather than blue-on-transparent: a tab bar can be
+     light or dark, and transparent letterforms vanish against one of them. The solid tile carries
+     its own contrast, so no prefers-color-scheme variant is needed.
+
+     Two glyphs is the ceiling at a 16x16 render. Anything finer -- a monogram ligature, a figure
+     from the write-up -- turns to mush at the size this is actually seen.
+
+     SVG is the primary icon because it stays sharp at every density and is under 600 bytes;
+     favicon.ico and apple-touch-icon.png cover browsers that ignore it. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="SS">
+  <rect width="64" height="64" rx="14" fill="#0b5fa5"/>
+  <text x="32" y="33" fill="#ffffff"
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif"
+        font-size="34" font-weight="700" letter-spacing="-1.5"
+        text-anchor="middle" dominant-baseline="central">SS</text>
+</svg>

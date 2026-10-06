@@ -1,0 +1,31 @@
+---
+layout: default
+---
+<article class="project">
+  <header class="project-head">
+    <p class="crumb"><a href="{{ '/' | relative_url }}#projects">← all projects</a></p>
+    <h1>{{ page.title }}</h1>
+    {% if page.subtitle %}<p class="subtitle">{{ page.subtitle }}</p>{% endif %}
+
+    {% if page.meta %}
+    <!-- dt/dd as DIRECT children so the grid can put label and value in two columns; a wrapping
+         div per pair would make each pair one grid cell and defeat the alignment. -->
+    <dl class="meta">
+      {% for item in page.meta %}
+      <dt>{{ item.label }}</dt>
+      <dd>{{ item.value }}</dd>
+      {% endfor %}
+    </dl>
+    {% endif %}
+
+    {% if page.links %}
+    <p class="refs">
+      {% for link in page.links %}
+      <a href="{{ link.url }}">{{ link.label }}</a>{% unless forloop.last %} · {% endunless %}
+      {% endfor %}
+    </p>
+    {% endif %}
+  </header>
+
+  {{ content }}
+</article>
