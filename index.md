@@ -12,7 +12,7 @@ og_card: summary
 <img class="portrait" src="{{ '/assets/portrait.jpg' | relative_url }}"
      alt="Sayanan Sivaraman" />
 <p class="intro">
-I'm Sayanan. I've worked in Machine Learning, Software Engineering, and Perception for over a decade, most recently at Apple (2015-2026), and at Volkswagen before that (2013-2015). This page documents some of my personal/side projects.
+I'm Sayanan. I've worked in Machine Learning, Software Engineering, and Perception for over a decade, most recently at Apple (2015–2026), and at Volkswagen before that (2013–2015). This page documents some of my personal/side projects.
 </p>
 </div>
 
@@ -23,13 +23,21 @@ I'm Sayanan. I've worked in Machine Learning, Software Engineering, and Percepti
 
 <a class="card" href="{{ '/projects/rellis3d/' | relative_url }}">
   <h3>Off-road vegetation perception on RELLIS-3D</h3>
-  <p>Agricultural, off-road semantic segmentation in images and lidar, using the RELLIS-3D
+  <p>Agricultural, off-road semantic segmentation in images and LiDAR, using the RELLIS-3D
     dataset.</p>
   <p>Frozen DINOv3 image models adapted for perspective segmentation, lifted into a BEV LiDAR grid
-    with U-Net BEV backbone. Temporal aggregation using pose estimates and another, smaller BEV
+    with a U-Net BEV backbone. Temporal aggregation using pose estimates and another, smaller BEV
     U-Net.</p>
-  <p>Export model using ONNX and TensorRT.</p>
-  <span class="tags">DINOv3 · BEV fusion · temporal aggregation · ONNX / TensorRT</span>
+  <p>Exported with ONNX and TensorRT.</p>
+  <span class="tags">Foundation model · DINOv3 · BEV fusion · temporal aggregation · ONNX / TensorRT</span>
+</a>
+
+<a class="card" href="{{ '/projects/gwhd_2021/' | relative_url }}">
+  <h3>Wheat-head detection on GWHD 2021</h3>
+  <p>Dense, small-object detection of wheat heads across 47 field domains, using the Global Wheat
+    Head Dataset.</p>
+  <p>Frozen DINOv3 backbones with a CenterNet-style head.</p>
+  <span class="tags">Foundation model · DINOv3 · CenterNet · small-object detection</span>
 </a>
 
 {% comment %}
@@ -45,12 +53,6 @@ I'm Sayanan. I've worked in Machine Learning, Software Engineering, and Percepti
   when a card should be visible but not yet clickable.
 {% endcomment %}
 {% comment %}
-<div class="card pending">
-  <h3>GHWD — Global Wheat Head Detection</h3>
-  <p>Planned.</p>
-  <span class="tags">detection · agricultural imagery</span>
-</div>
-
 <div class="card pending">
   <h3>NuScenes</h3>
   <p>Planned.</p>
@@ -70,8 +72,8 @@ I'm Sayanan. I've worked in Machine Learning, Software Engineering, and Percepti
 {: #about}
 
  - 11 years at Apple: 
-    - 2 years in Siri (agentic harness, tool-calling, evaluation, simulation, on-device model, fine-tuning and distillation)
-    - 9 years on Special Projects Group (perception, machine learning, computer vision).
+    - 2 years in Siri (agentic harness, tool-calling, evaluation, simulation, on-device models, fine-tuning and distillation)
+    - 9 years in the Special Projects Group (perception, machine learning, computer vision).
   - 2 years at Volkswagen Group of America.
  - Looking to find my next role in robotics, machine learning, or modern agentic systems.
  
