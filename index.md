@@ -21,6 +21,14 @@ I'm Sayanan. I've worked in Machine Learning, Software Engineering, and Percepti
 
 <div class="cards">
 
+<a class="card" href="{{ '/projects/nuscenes/' | relative_url }}">
+  <h3>Online-map Perception and VLM scene tagging on nuScenes (WIP)</h3>
+  <p>Camera-only depth and BEV maps-perception for autonomous driving, using the nuScenes
+    dataset with map expansion.</p>
+  <p>Frozen DINOv3 backbones for monocular depth and Lift-Splat-Shoot BEV, VLM scene-tagging (Qwen3.8-27B).</p>
+  <span class="tags">Foundation model · DINOv3 · Qwen3.8 · BEV · monocular depth</span>
+</a>
+
 <a class="card" href="{{ '/projects/rellis3d/' | relative_url }}">
   <h3>Off-road vegetation perception on RELLIS-3D</h3>
   <p>Agricultural, off-road semantic segmentation in images and LiDAR, using the RELLIS-3D
@@ -53,12 +61,6 @@ I'm Sayanan. I've worked in Machine Learning, Software Engineering, and Percepti
   when a card should be visible but not yet clickable.
 {% endcomment %}
 {% comment %}
-<div class="card pending">
-  <h3>NuScenes</h3>
-  <p>Planned.</p>
-  <span class="tags">autonomous driving · multi-sensor</span>
-</div>
-
 <div class="card pending">
   <h3>Multimodal-Mind2Web</h3>
   <p>Planned.</p>
