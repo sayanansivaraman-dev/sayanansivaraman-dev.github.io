@@ -104,7 +104,7 @@ Adding a Dice loss term reduced overfitting and improved overall accuracy. This 
 
 **How much does adding camera data help 3D segmentation accuracy?** RELLIS-3D has only a
 forward-facing camera, so the honest version of the question is narrower: how much does it help
-*where it actually sees*, and what does carrying it cost everywhere else?
+where it actually sees, and what does carrying it cost everywhere else?
 
 Grid: 256×256 cells at 20 cm (±25.6 m), 12 vertical levels at 50 cm. Each vertical level has the mean intensity of the LiDAR points and the raw count of points. We also include x- and y-coordinate planes, so the network knows the (x, y) of the cell centers.
 
@@ -172,8 +172,8 @@ We created a temporal model by pose-aligning the 4 most-recent BEV+camera (singl
 
 ### A flicker metric
 
-Warp frame *k−1*'s prediction into frame *k* using the relative pose, take the argmax of both, and
-count the cells whose class changed. Scored on cells that are labeled in *k* and had warp support —
+Warp frame k−1's prediction into frame k using the relative pose, take the argmax of both, and
+count the cells whose class changed. Scored on cells that are labeled in k and had warp support —
 the same population mIoU scores, so the two numbers refer to the same cells.
 
 We tested 4 different fusion heads, with increasing non-linearity, spatial, and temporal context.
@@ -191,7 +191,7 @@ The per-cell heads are tiny and feed-forward, without additional spatial context
 spatial receptive field, which is the one thing no per-cell head can have at any width.
 
 As a control, we also ran a U-Net with 5 identical inputs — `ablate_history` fills all four history slots with a copy of
-the *current* frame, so the head sees the same tensor shape and the same parameter count with
+the current frame, so the head sees the same tensor shape and the same parameter count with
 none of the information.
 
 We use the following accuracy metrics.

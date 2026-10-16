@@ -56,25 +56,34 @@ cameras, a 32-beam LiDAR, ego poses and calibration, across Boston and Singapore
 
 ## 1. Questions
 
-How well do frozen DINOv3 features work for metric depth from
-a single camera, six cameras fused into one bird's-eye view, and objects that matter at long range, as well as lanes, crosswalks, etc.
+Two sets of questions. The VLM work came first: can a general-purpose VLM describe driving scenes
+well enough to audit a dataset, and to label what the dataset leaves out? Then perception: how far
+do frozen DINOv3 features go, from metric depth in one camera to six cameras fused into a
+bird's-eye view, and can the VLM's labels and tags feed back into it?
 
+**VLM questions**
 
 | # | question | arms | measured by |
 |---|---|---|---|
-| 1 | Do frozen DINOv3 features carry metric depth, and which backbone carries more? | ViT-S+/16 vs ConvNeXt-T s16; LiDAR vs map ground truth | depth error by distance band |
-| 2 | Are frozen DINOv3 backbones viable for bird's-eye view? | ViT-S+/16 and ConvNeXt-T s16 (frozen) vs ResNet-50 (fine-tuned) | IoU per map layer and for vehicles, by distance band |
-| 3 | How much can a 2d map supply as ground truth? | map depth, map layers, mapped traffic lights | agreement with LiDAR; lights visible by range |
-| 4 | Can a general-purpose VLM tag driving scenes from a prompt alone? | Qwen3.8-27B-FP8, prompt only | precision / recall against nuScenes' scene descriptions |
-| 5 | Do the VLM's tags explain where perception fails? | depth and BEV error, sliced by tag | error by tag vs by nuScenes' own descriptions |
+| V1 | Can a general-purpose VLM tag driving scenes from a prompt alone? | Qwen3.8-27B-FP8, prompt only | precision / recall against annotation-derived tags and nuScenes' scene descriptions |
+| V2 | Can the VLM auto-label traffic-light state, which nuScenes doesn't annotate? | Qwen3.8-27B-FP8, prompt only | agreement with a few hundred hand-labeled lights |
 
-Question 1 informs question 2: Lift-Splat-Shoot places image features in the bird's-eye view
-using predicted depth, so poor frozen-feature depth would sink it. Published work is encouraging --
-frozen DINOv2 in Lift-Splat-Shoot improved vehicle IoU on nuScenes by 7.4 points
-([Hayes et al., 2025](https://arxiv.org/abs/2501.08118v1)) -- but took depth from a separate
-model rather than from the DINO features.
+**Perception questions**
 
-We plan to get depth using DINOV3 features, adding a trainable head.
+| # | question | arms | measured by |
+|---|---|---|---|
+| P1 | Do frozen DINOv3 features carry metric depth, and which backbone carries more? | ViT-S+/16 vs ConvNeXt-T s16; LiDAR vs map ground truth | depth error by distance band |
+| P2 | Are frozen DINOv3 backbones viable for bird's-eye view? | ViT-S+/16 and ConvNeXt-T s16 (frozen) vs ResNet-50 (fine-tuned) | IoU per map layer and for vehicles, by distance band |
+| P3 | How much can a 2D map supply as ground truth? | map depth, map layers, mapped traffic lights | agreement with LiDAR; lights visible by range |
+| P4 | Can the VLM's traffic-light-state labels train a traffic-light classifier? | a head on frozen DINOv3 features, trained on the VLM's labels (V2) | accuracy on the hand-labeled lights, vs the VLM itself |
+| P5 | Do the VLM's tags explain where perception fails? | depth and BEV error, sliced by VLM tag (V1) | error by tag vs by nuScenes' own descriptions |
+
+P1 informs P2: Lift-Splat-Shoot places image features in the bird's-eye view using predicted
+depth, so poor frozen-feature depth would sink it. Published work is encouraging: frozen DINOv2 in
+Lift-Splat-Shoot improved vehicle IoU on nuScenes by 7.4 points
+([Hayes et al., 2025](https://arxiv.org/abs/2501.08118v1)), but took depth from a separate model
+rather than from the DINO features. Here, depth comes from the DINOv3 features themselves, through
+a trainable head (§4).
 
 {% comment %}
 [[What carries over from RELLIS-3D (stride, BEV fusion) and GWHD (domain shift, small objects)]]
@@ -82,7 +91,43 @@ We plan to get depth using DINOV3 features, adding a trainable head.
 
 ---
 
-## 2. The dataset
+## 2. VLM scene tagging
+
+The VLM work asks two questions (V1 and V2 in §1):
+
+1. **How good is zero-shot scene tagging?** Score the VLM's tags, by precision and recall, against
+   two kinds of ground truth: tags derived from other annotations (3D boxes, the map), and the
+   human annotators' scene descriptions.
+2. **Can the VLM auto-label traffic-light state?** nuScenes doesn't annotate light state at all.
+   If the VLM's labels hold up, they can train a traffic-light state classifier on nuScenes.
+
+Qwen3.8-27B-FP8 is served with vLLM. A system prompt frames the task as a dataset audit: the
+model sees three front-camera images sampled from one scene and answers yes / no / unsure for
+each tag: night, rain, intersection, pedestrian, bus, truck, construction, traffic light, glare
+and heavy occlusion.
+
+Several of these can be derived from other annotations: pedestrians, buses and trucks from the 3D
+boxes, intersections and traffic lights from the map. Night and rain, however, appear only in the
+human-written scene descriptions. Traffic-light state isn't annotated anywhere; the map
+expansion stores only each light's geometry.
+
+{% comment %}
+[[Setup: Qwen3.8-27B-FP8 on vLLM -- GPU memory needed (weights ~28-30 GB at FP8), offline batch
+  inference, JSON-schema structured outputs, prefix caching of the shared system prompt]]
+
+[[The prompt, and how each tag's ground truth is derived (boxes / map / scene description)]]
+
+[[Table: tag | precision | recall -- scored against nuScenes' human scene descriptions and object
+  attributes]]
+
+[[Throughput: samples / s, GPU, cost per 1k samples]]
+
+[[Figure: example frames with their tags, including a few failures]]
+{% endcomment %}
+
+---
+
+## 3. The dataset
 
 Planned.
 
@@ -117,7 +162,7 @@ Planned.
 
 ---
 
-## 3. Monocular depth on frozen DINOv3
+## 4. Monocular depth on frozen DINOv3
 
 Planned.
 
@@ -158,7 +203,7 @@ Planned.
 
 ---
 
-## 4. Traffic lights from the map
+## 5. Traffic lights -- Map Geometry and VLM State
 
 Planned.
 
@@ -174,27 +219,6 @@ Planned.
 [[Count of mapped lights in view by range, before and after the occlusion check]]
 
 [[Result: far-range light detection with a per-light range output, if the counts justify it]]
-{% endcomment %}
-
----
-
-## 5. VLM scene tagging
-
-Planned.
-
-{% comment %}
-[[Setup: Qwen3.8-27B-FP8 on vLLM -- GPU memory needed (weights ~28-30 GB at FP8), offline batch
-  inference, JSON-schema structured outputs, prefix caching across the six cameras]]
-
-[[The tag schema: night, rain, construction zone, intersection, occlusion, glare, ... and the
-  prompt]]
-
-[[Table: tag | precision | recall -- scored against nuScenes' human scene descriptions and object
-  attributes]]
-
-[[Throughput: samples / s, GPU, cost per 1k samples]]
-
-[[Figure: example frames with their tags, including a few failures]]
 {% endcomment %}
 
 ---
@@ -236,25 +260,6 @@ Planned.
 [[Temporal variant on the dense scene subset]]
 
 [[Figure: BEV predictions vs map ground truth]]
-{% endcomment %}
-
----
-
-## 8. Further VLM experiments
-
-Planned, ranked by how well each can be scored against nuScenes ground truth.
-
-{% comment %}
-[[Spatial reasoning against nuScenes boxes: counting and distance questions, accuracy by
-  distance / size / occlusion (check NuScenes-QA and DriveLM first)]]
-
-[[Rare-case mining: emergency vehicles, animals, construction -- retrieval precision / recall]]
-
-[[Traffic-light state on projected map crops, scored against a few hundred hand labels]]
-
-[[Distilling the VLM's tags into a small head on frozen DINOv3: agreement, latency, cost]]
-
-[[Perception output as VLM context: do hallucinated objects drop?]]
 {% endcomment %}
 
 ---
